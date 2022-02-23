@@ -25,6 +25,13 @@ class SwitchUserView: NSView {
         selectUserLabel.font = NSFont.preferredFont(forTextStyle: .title1)
         selectUserLabel.textColor = .black
         
+        
+        let userStackView = NSStackView()
+        userStackView.orientation = .vertical
+        userStackView.wantsLayer = true
+        userStackView.layer?.backgroundColor = NSColor.white.cgColor
+        
+        userViews = []
         for (number, user) in User.getUsers().enumerated() {
             currentUser = user
             
@@ -33,19 +40,18 @@ class SwitchUserView: NSView {
             if number % 2 == 0 {
                 userView.layer?.backgroundColor = NSColor.systemRed.cgColor
             } else {
-                userView.layer?.backgroundColor = NSColor.systemRed.cgColor
+                userView.layer?.backgroundColor = NSColor.systemYellow.cgColor
             }
             userViews.append(userView)
             
             
-            let click = NSClickGestureRecognizer(target: self, action: #selector(changeLastLoggedInUser))
+            let click = NSClickGestureRecognizer(target: self, action: #selector(changeLastLoggedInUser(_:)))
             userView.addGestureRecognizer(click)
+            
+            userStackView.addArrangedSubview(userView)
         }
         
-        
-        let userStackView = NSStackView(views: userViews)
-        userStackView.orientation = .horizontal
-        
+//        userStackView.subviews = userViews
         
         
         
@@ -55,8 +61,12 @@ class SwitchUserView: NSView {
         
         let scrollView = NSScrollView(frame: NSRect(x: 0, y: 0, width: 300, height: 300))
         scrollView.documentView = userStackView
+        
+        
         userStackView.heightAnchor.constraint(equalToConstant: 300).isActive = true
         userStackView.widthAnchor.constraint(equalToConstant: 300).isActive = true
+        
+        
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         
         
@@ -67,6 +77,7 @@ class SwitchUserView: NSView {
         selectUserLabel.translatesAutoresizingMaskIntoConstraints = false
         userStackView.translatesAutoresizingMaskIntoConstraints = false
         button.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
         
         
         
@@ -86,8 +97,12 @@ class SwitchUserView: NSView {
         ])
     }
     
-    @objc func changeLastLoggedInUser() {
-        guard let currentUser = currentUser else {
+    @objc func changeLastLoggedInUser(_ sender: NSClickGestureRecognizer) {
+        guard let currentUserView = sender.view as? IndividualUserView else {
+            return
+        }
+        
+        guard let currentUser = currentUserView.user else {
             return
         }
 
@@ -98,6 +113,10 @@ class SwitchUserView: NSView {
             parentViewController.changeViewToLogin()
         }
     }
+}
+
+class IndividualUserView: NSView {
+    var user: User?
 }
 
 class GetViewForUser {
@@ -114,15 +133,22 @@ class GetViewForUser {
     func view() -> NSView {
         let defaultImage = NSImage(named: "user_icon")!
         defaultImage.size = NSSize(width: 40, height: 40)
+        
         let userImageView = NSImageView(image: userImage ?? defaultImage)
+        userImageView.wantsLayer = true
+        userImageView.layer?.cornerRadius = 15
+        
         let usernameView = NSTextField(labelWithString: username)
         usernameView.textColor = .black
         
-        let view = NSView(frame: NSRect(x: 0, y: 0, width: 300, height: 40))
+        let view = IndividualUserView(frame: NSRect(x: 0, y: 0, width: 300, height: 50))
+        view.user = user
+        
         view.subviews = [userImageView, usernameView]
         
         view.wantsLayer = true
         view.layer?.backgroundColor = NSColor.systemYellow.cgColor
+        view.layer?.cornerRadius = 10
         
         
         userImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -131,11 +157,15 @@ class GetViewForUser {
         
         NSLayoutConstraint.activate([
             userImageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 5),
-            userImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 5),
+            userImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             userImageView.widthAnchor.constraint(equalToConstant: 30),
+            userImageView.heightAnchor.constraint(equalToConstant: 30),
             
-            usernameView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 40),
+            usernameView.leftAnchor.constraint(equalTo: userImageView.rightAnchor, constant: 5),
             usernameView.centerYAnchor.constraint(equalTo: userImageView.centerYAnchor),
+            
+            view.heightAnchor.constraint(equalToConstant: 50),
+            view.widthAnchor.constraint(equalToConstant: 300),
         ])
         
         return view

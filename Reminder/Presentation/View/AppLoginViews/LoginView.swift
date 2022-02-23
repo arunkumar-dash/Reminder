@@ -31,13 +31,16 @@ class LoginView: NSView, NSGestureRecognizerDelegate {
         password.isHidden = true
         password.backgroundColor = .gray
         password.textColor = .white
+        password.drawFocusRingMask()
         
         incorrectPassword.isHidden = true
         incorrectPassword.font = NSFont.preferredFont(forTextStyle: .footnote)
         incorrectPassword.textColor = .red
         
-//        let userImageButton = NSButton(image: user.photo ?? defaultImage, target: self, action: #selector(getPasswordFromUser))
         let userImage = NSImageView(image: user.photo ?? defaultImage)
+        userImage.wantsLayer = true
+        userImage.layer?.cornerRadius = 100
+        
         let click = NSClickGestureRecognizer(target: self, action: #selector(getPasswordFromUser))
         userImage.addGestureRecognizer(click)
         
