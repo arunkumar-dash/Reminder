@@ -10,6 +10,11 @@
 		1D648A1027BF6A0B00A6AC58 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D648A0F27BF6A0B00A6AC58 /* AppDelegate.swift */; };
 		1D648A1227BF6A0E00A6AC58 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D648A1127BF6A0E00A6AC58 /* Assets.xcassets */; };
 		1D648A1527BF6A0E00A6AC58 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1D648A1327BF6A0E00A6AC58 /* MainMenu.xib */; };
+		1D648A2927BF7FA700A6AC58 /* AppLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D648A2827BF7FA700A6AC58 /* AppLoginViewController.swift */; };
+		1D93291D27C4F17B00088E99 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93291C27C4F17B00088E99 /* WelcomeView.swift */; };
+		1D93291F27C4F21A00088E99 /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93291E27C4F21A00088E99 /* RegistrationView.swift */; };
+		1D93292127C4F2A100088E99 /* SwitchUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93292027C4F2A100088E99 /* SwitchUserView.swift */; };
+		1D93292327C4F33700088E99 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93292227C4F33700088E99 /* LoginView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -18,6 +23,11 @@
 		1D648A1127BF6A0E00A6AC58 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1D648A1427BF6A0E00A6AC58 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		1D648A1627BF6A0E00A6AC58 /* Reminder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Reminder.entitlements; sourceTree = "<group>"; };
+		1D648A2827BF7FA700A6AC58 /* AppLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoginViewController.swift; sourceTree = "<group>"; };
+		1D93291C27C4F17B00088E99 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		1D93291E27C4F21A00088E99 /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
+		1D93292027C4F2A100088E99 /* SwitchUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchUserView.swift; sourceTree = "<group>"; };
+		1D93292227C4F33700088E99 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,9 +61,14 @@
 			isa = PBXGroup;
 			children = (
 				1D648A0F27BF6A0B00A6AC58 /* AppDelegate.swift */,
+				1D648A2827BF7FA700A6AC58 /* AppLoginViewController.swift */,
 				1D648A1127BF6A0E00A6AC58 /* Assets.xcassets */,
 				1D648A1327BF6A0E00A6AC58 /* MainMenu.xib */,
 				1D648A1627BF6A0E00A6AC58 /* Reminder.entitlements */,
+				1D93291C27C4F17B00088E99 /* WelcomeView.swift */,
+				1D93291E27C4F21A00088E99 /* RegistrationView.swift */,
+				1D93292027C4F2A100088E99 /* SwitchUserView.swift */,
+				1D93292227C4F33700088E99 /* LoginView.swift */,
 			);
 			path = Reminder;
 			sourceTree = "<group>";
@@ -128,6 +143,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D93292127C4F2A100088E99 /* SwitchUserView.swift in Sources */,
+				1D93291F27C4F21A00088E99 /* RegistrationView.swift in Sources */,
+				1D93291D27C4F17B00088E99 /* WelcomeView.swift in Sources */,
+				1D648A2927BF7FA700A6AC58 /* AppLoginViewController.swift in Sources */,
+				1D93292327C4F33700088E99 /* LoginView.swift in Sources */,
 				1D648A1027BF6A0B00A6AC58 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
