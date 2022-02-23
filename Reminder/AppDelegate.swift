@@ -11,20 +11,16 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet var window: NSWindow!
-    let viewController = AppLoginViewController()
+    var presenter: AppLoginPresenter?
 
     func applicationWillFinishLaunching(_ notification: Notification) {
         print("app will launch")
+        presenter = AppLoginPresenter(window: window)
         
-        window.contentViewController = viewController
+        let appLoginViewController = AppLoginViewController()
+        presenter?.appLoginViewController = appLoginViewController
         
-        let size = NSSize(width: 600, height: 700)
-        window.maxSize = size
-        window.minSize = size
-        
-        // hiding full screen button
-        let maximizeButton = window.standardWindowButton(.zoomButton)
-        maximizeButton?.isHidden = true
+        presenter?.viewLoaded()
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
@@ -34,7 +30,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ aNotification: Notification) {
         // save current user details
-        viewController.removeFromParent()
     }
 
     func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {

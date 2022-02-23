@@ -13,7 +13,7 @@ class WelcomeView: NSView {
     let subheadline = NSTextField(labelWithString: "To start, create user.")
     let button = NSButton(title: "Create User", target: self, action: #selector(AppLoginViewController.changeViewToRegistration))
     
-    func load() {
+    func load(_ viewController: NSViewController) {
         
         headline.font = NSFont.preferredFont(forTextStyle: .largeTitle)
         headline.textColor = .black

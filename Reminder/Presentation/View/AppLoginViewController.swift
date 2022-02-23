@@ -8,12 +8,12 @@
 import Foundation
 import AppKit
 
-class AppLoginViewController: NSViewController {
-    var currentView: NSView? = nil
-    let welcomeView = WelcomeView()
-    let registrationView = RegistrationView()
-    let switchUserView = SwitchUserView()
-    let loginView = LoginView()
+class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
+    private var currentView: NSView? = nil
+    private let welcomeView = WelcomeView()
+    private let registrationView = RegistrationView()
+    private let switchUserView = SwitchUserView()
+    private let loginView = LoginView()
     
     
     let createUserButtonInSwitchUserView = NSButton(title: "Create User", target: self, action: #selector(AppLoginViewController.changeViewToRegistration))
@@ -32,7 +32,6 @@ class AppLoginViewController: NSViewController {
     
     override func viewDidLoad() {
         print("view loaded")
-        
         
         view.wantsLayer = true
         view.layer?.backgroundColor = .white
@@ -53,18 +52,19 @@ class AppLoginViewController: NSViewController {
     }
     
     func loadAllViews() {
-        welcomeView.load()
+        welcomeView.load(self)
         registrationView.load(self)
         switchUserView.load(self)
-        loginView.load()
+        loginView.load(self)
     }
     
     func changeView(to selectedView: Views) {
+        // detach from parent view
         currentView?.removeFromSuperview()
         
         switch(selectedView) {
         case .welcomeView:
-            welcomeView.load()
+            welcomeView.load(self)
             currentView = welcomeView
             
         case .registrationView:
@@ -76,11 +76,11 @@ class AppLoginViewController: NSViewController {
             currentView = switchUserView
             
         case .loginView:
-            loginView.load()
+            loginView.load(self)
             currentView = loginView
         }
         
-        // remove subview also
+        // add to subview
         view.addSubview(currentView!)
         
         
@@ -89,21 +89,15 @@ class AppLoginViewController: NSViewController {
         currentView?.widthAnchor.constraint(equalToConstant: 600).isActive = true
         currentView?.heightAnchor.constraint(equalToConstant: 700).isActive = true
         
-        // alt for
-        // try this else, view = welcomeViewController
     }
     
     
-    
-    @objc func changeViewToWelcome() {
-        self.changeView(to: .welcomeView)
-    }
     
     @objc func changeViewToRegistration() {
         self.changeView(to: .registrationView)
     }
     
-    @objc func changeViewToSwitchUser() {
+    func changeViewToSwitchUser() {
         self.changeView(to: .switchUserView)
     }
     
@@ -135,3 +129,4 @@ class AppLoginViewController: NSViewController {
     }
     
 }
+

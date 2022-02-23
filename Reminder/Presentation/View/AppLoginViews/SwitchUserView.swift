@@ -9,11 +9,14 @@ import Foundation
 import AppKit
 
 class SwitchUserView: NSView {
-    var userViews: [NSView] = []
-    var currentUser: User?
-    var parentViewController: AppLoginViewController?
+    private var userViews: [NSView] = []
+    private var currentUser: User?
+    private var parentViewController: AppLoginViewController?
     
-    func load(_ viewController: AppLoginViewController) {
+    func load(_ viewController: NSViewController) {
+        guard let viewController = viewController as? AppLoginViewController else {
+            return
+        }
         parentViewController = viewController
         
         let button = viewController.createUserButtonInSwitchUserView
@@ -125,8 +128,6 @@ class GetViewForUser {
         userImageView.translatesAutoresizingMaskIntoConstraints = false
         usernameView.translatesAutoresizingMaskIntoConstraints = false
         
-//        let click = NSClickGestureRecognizer(target: self, action: #selector(changeLastLoggedInUser))
-//        view.addGestureRecognizer(click)
         
         NSLayoutConstraint.activate([
             userImageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 5),
@@ -140,10 +141,6 @@ class GetViewForUser {
         return view
     }
     
-//    @objc func changeLastLoggedInUser() {
-//        User.lastLoggedInUser = user
-//        print("user:", username, "was clicked")
-//    }
 }
 
 class User {

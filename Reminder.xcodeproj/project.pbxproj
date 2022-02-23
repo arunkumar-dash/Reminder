@@ -15,6 +15,8 @@
 		1D93291F27C4F21A00088E99 /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93291E27C4F21A00088E99 /* RegistrationView.swift */; };
 		1D93292127C4F2A100088E99 /* SwitchUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93292027C4F2A100088E99 /* SwitchUserView.swift */; };
 		1D93292327C4F33700088E99 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93292227C4F33700088E99 /* LoginView.swift */; };
+		1D93293127C62B7400088E99 /* AppLoginPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93293027C62B7400088E99 /* AppLoginPresenter.swift */; };
+		1D93293527C6313E00088E99 /* AppLoginViewControllerContract.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93293427C6313E00088E99 /* AppLoginViewControllerContract.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		1D93291E27C4F21A00088E99 /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
 		1D93292027C4F2A100088E99 /* SwitchUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchUserView.swift; sourceTree = "<group>"; };
 		1D93292227C4F33700088E99 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		1D93293027C62B7400088E99 /* AppLoginPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoginPresenter.swift; sourceTree = "<group>"; };
+		1D93293427C6313E00088E99 /* AppLoginViewControllerContract.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoginViewControllerContract.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,16 +65,58 @@
 			isa = PBXGroup;
 			children = (
 				1D648A0F27BF6A0B00A6AC58 /* AppDelegate.swift */,
-				1D648A2827BF7FA700A6AC58 /* AppLoginViewController.swift */,
 				1D648A1127BF6A0E00A6AC58 /* Assets.xcassets */,
 				1D648A1327BF6A0E00A6AC58 /* MainMenu.xib */,
 				1D648A1627BF6A0E00A6AC58 /* Reminder.entitlements */,
+				1D93292E27C615D500088E99 /* Presentation */,
+			);
+			path = Reminder;
+			sourceTree = "<group>";
+		};
+		1D93292C27C6157500088E99 /* AppLoginViews */ = {
+			isa = PBXGroup;
+			children = (
 				1D93291C27C4F17B00088E99 /* WelcomeView.swift */,
 				1D93291E27C4F21A00088E99 /* RegistrationView.swift */,
 				1D93292027C4F2A100088E99 /* SwitchUserView.swift */,
 				1D93292227C4F33700088E99 /* LoginView.swift */,
 			);
-			path = Reminder;
+			path = AppLoginViews;
+			sourceTree = "<group>";
+		};
+		1D93292D27C615A700088E99 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				1D648A2827BF7FA700A6AC58 /* AppLoginViewController.swift */,
+				1D93292C27C6157500088E99 /* AppLoginViews */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		1D93292E27C615D500088E99 /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				1D93293327C62BC000088E99 /* Contract */,
+				1D93293227C62B8F00088E99 /* Presenter */,
+				1D93292D27C615A700088E99 /* View */,
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
+		1D93293227C62B8F00088E99 /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				1D93293027C62B7400088E99 /* AppLoginPresenter.swift */,
+			);
+			path = Presenter;
+			sourceTree = "<group>";
+		};
+		1D93293327C62BC000088E99 /* Contract */ = {
+			isa = PBXGroup;
+			children = (
+				1D93293427C6313E00088E99 /* AppLoginViewControllerContract.swift */,
+			);
+			path = Contract;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -146,8 +192,10 @@
 				1D93292127C4F2A100088E99 /* SwitchUserView.swift in Sources */,
 				1D93291F27C4F21A00088E99 /* RegistrationView.swift in Sources */,
 				1D93291D27C4F17B00088E99 /* WelcomeView.swift in Sources */,
+				1D93293127C62B7400088E99 /* AppLoginPresenter.swift in Sources */,
 				1D648A2927BF7FA700A6AC58 /* AppLoginViewController.swift in Sources */,
 				1D93292327C4F33700088E99 /* LoginView.swift in Sources */,
+				1D93293527C6313E00088E99 /* AppLoginViewControllerContract.swift in Sources */,
 				1D648A1027BF6A0B00A6AC58 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

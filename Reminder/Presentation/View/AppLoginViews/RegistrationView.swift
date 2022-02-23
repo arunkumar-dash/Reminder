@@ -13,7 +13,11 @@ class RegistrationView: NSView {
     let password = NSSecureTextField()
     
     
-    func load(_ viewController: AppLoginViewController) {
+    func load(_ viewController: NSViewController) {
+        guard let viewController = viewController as? AppLoginViewController else {
+            return
+        }
+        
         let button = viewController.createUserButtonInRegistrationView
         
         guard let image = NSImage(named: "user_icon") else { return }
