@@ -15,7 +15,7 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
     private let registrationView = RegistrationView()
     private let switchUserView = SwitchUserView()
     private let loginView = LoginView()
-    var appLoginPresenter: AppLoginPresenter?
+    var appLoginPresenter: AppLoginPresenterContract?
     
     
     

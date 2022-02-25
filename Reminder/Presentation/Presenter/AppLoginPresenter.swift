@@ -8,7 +8,7 @@
 import Foundation
 import AppKit
 
-public class AppLoginPresenter {
+public class AppLoginPresenter: AppLoginPresenterContract {
     weak var appLoginViewController: AppLoginViewControllerContract?
     
     func createUser(username: String, password: String, image: NSImage?, onSuccess success: () -> Void, onFailure failure: (String) -> Void) {
