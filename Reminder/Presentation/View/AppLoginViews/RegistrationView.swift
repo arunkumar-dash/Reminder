@@ -9,80 +9,102 @@ import Foundation
 import AppKit
 
 class RegistrationView: NSView {
-    let username = NSTextField()
-    let password = NSSecureTextField()
     
+    let usernameTextBox = NSTextField()
+    let passwordTextBox = NSSecureTextField()
+    // should get image
+    let image: NSImage? = NSImage(named: "user_icon")
+    let createUserButton = NSButton(title: "Create User", target: self, action: #selector(createUser))
+    let responseLabel: NSTextField = NSTextField(labelWithString: "")
+    
+    private var parentViewController: AppLoginViewControllerContract?
     
     func load(_ viewController: NSViewController) {
-        guard let viewController = viewController as? AppLoginViewController else {
+        
+        guard let parentViewController = viewController as? AppLoginViewControllerContract else {
             return
         }
         
-        let button = viewController.createUserButtonInRegistrationView
-        
-        guard let image = NSImage(named: "user_icon") else { return }
-        let imageView = NSImageView(image: image)
+        self.parentViewController = parentViewController
         
         
-        username.wantsLayer = true
-        username.layer?.backgroundColor = NSColor.systemGray.cgColor
-        username.layer?.cornerRadius = 10
-        username.layer?.borderColor = .black
-        username.layer?.borderWidth = 1
+        guard let mockImage = NSImage(named: "user_icon") else { return }
+        let mockImageView = NSImageView(image: mockImage)
         
         
-        username.placeholderString = "User Name"
-        username.isBordered = true
-        username.backgroundColor = .gray
-        username.textColor = .white
-        username.font = .preferredFont(forTextStyle: .title2)
-        username.alignment = .center
+        usernameTextBox.wantsLayer = true
+        usernameTextBox.layer?.backgroundColor = NSColor.systemGray.cgColor
+        usernameTextBox.layer?.cornerRadius = 10
+        usernameTextBox.layer?.borderColor = .black
+        usernameTextBox.layer?.borderWidth = 1
         
         
-        password.wantsLayer = true
-        password.layer?.cornerRadius = 10
-        password.layer?.backgroundColor = NSColor.systemGray.cgColor
-        password.layer?.borderColor = .black
-        password.layer?.borderWidth = 1
+        usernameTextBox.placeholderString = "User Name"
+        usernameTextBox.isBordered = true
+        usernameTextBox.backgroundColor = .gray
+        usernameTextBox.textColor = .white
+        usernameTextBox.font = .preferredFont(forTextStyle: .title2)
+        usernameTextBox.alignment = .center
+        usernameTextBox.stringValue = ""
+        
+        
+        passwordTextBox.wantsLayer = true
+        passwordTextBox.layer?.cornerRadius = 10
+        passwordTextBox.layer?.backgroundColor = NSColor.systemGray.cgColor
+        passwordTextBox.layer?.borderColor = .black
+        passwordTextBox.layer?.borderWidth = 1
         
      
-        password.placeholderString = "Password"
-        password.isBordered = true
-        password.backgroundColor = .gray
-        password.textColor = .white
-        password.font = .preferredFont(forTextStyle: .title2)
-        password.alignment = .center
+        passwordTextBox.placeholderString = "Password"
+        passwordTextBox.isBordered = true
+        passwordTextBox.backgroundColor = .gray
+        passwordTextBox.textColor = .white
+        passwordTextBox.font = .preferredFont(forTextStyle: .title2)
+        passwordTextBox.alignment = .center
+        passwordTextBox.stringValue = ""
+        
+        responseLabel.isHidden = true
+        
+        createUserButton.bezelColor = .brown
         
         
-        button.bezelColor = .brown
         
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        username.translatesAutoresizingMaskIntoConstraints = false
-        password.translatesAutoresizingMaskIntoConstraints = false
-        button.translatesAutoresizingMaskIntoConstraints = false
+        mockImageView.translatesAutoresizingMaskIntoConstraints = false
+        usernameTextBox.translatesAutoresizingMaskIntoConstraints = false
+        passwordTextBox.translatesAutoresizingMaskIntoConstraints = false
+        createUserButton.translatesAutoresizingMaskIntoConstraints = false
+        responseLabel.translatesAutoresizingMaskIntoConstraints = false
         
         
-        subviews = [imageView, username, password, button]
+        subviews = [mockImageView, usernameTextBox, passwordTextBox, responseLabel, createUserButton]
         
         NSLayoutConstraint.activate([
-            imageView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 100),
-            imageView.bottomAnchor.constraint(equalTo: topAnchor, constant: 250),
-            imageView.heightAnchor.constraint(equalToConstant: 150),
+            mockImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            mockImageView.topAnchor.constraint(equalTo: topAnchor, constant: 100),
+            mockImageView.bottomAnchor.constraint(equalTo: topAnchor, constant: 250),
+            mockImageView.heightAnchor.constraint(equalToConstant: 150),
             
-            username.centerXAnchor.constraint(equalTo: centerXAnchor),
-            username.topAnchor.constraint(equalTo: centerYAnchor),
-            username.widthAnchor.constraint(equalToConstant: 250),
-            username.heightAnchor.constraint(equalToConstant: 30),
+            usernameTextBox.centerXAnchor.constraint(equalTo: centerXAnchor),
+            usernameTextBox.topAnchor.constraint(equalTo: centerYAnchor),
+            usernameTextBox.widthAnchor.constraint(equalToConstant: 250),
+            usernameTextBox.heightAnchor.constraint(equalToConstant: 30),
             
-            password.centerXAnchor.constraint(equalTo: centerXAnchor),
-            password.topAnchor.constraint(equalTo: username.bottomAnchor, constant: 20),
-            password.widthAnchor.constraint(equalToConstant: 250),
-            password.heightAnchor.constraint(equalToConstant: 30),
+            passwordTextBox.centerXAnchor.constraint(equalTo: centerXAnchor),
+            passwordTextBox.topAnchor.constraint(equalTo: usernameTextBox.bottomAnchor, constant: 20),
+            passwordTextBox.widthAnchor.constraint(equalToConstant: 250),
+            passwordTextBox.heightAnchor.constraint(equalToConstant: 30),
             
-            button.centerXAnchor.constraint(equalTo: centerXAnchor),
-            button.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -30),
+            responseLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            responseLabel.topAnchor.constraint(equalTo: passwordTextBox.bottomAnchor, constant: 20),
+            
+            
+            createUserButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            createUserButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -30),
         ])
+    }
+    
+    @objc func createUser() {
+        parentViewController?.createUser(self)
     }
     
 }

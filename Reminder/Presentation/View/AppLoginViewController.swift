@@ -10,19 +10,16 @@ import AppKit
 
 class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
     private var currentView: NSView? = nil
+    private var previousView: NSView? = nil
     private let welcomeView = WelcomeView()
     private let registrationView = RegistrationView()
     private let switchUserView = SwitchUserView()
     private let loginView = LoginView()
+    var appLoginPresenter: AppLoginPresenter?
     
     
-    let createUserButtonInSwitchUserView = NSButton(title: "Create User", target: self, action: #selector(AppLoginViewController.changeViewToRegistration))
     
-    
-    let createUserButtonInRegistrationView = NSButton(title: "Create User", target: self, action: #selector(createUser))
-    
-    
-    enum Views {
+    private enum Views {
         case welcomeView
         case registrationView
         case switchUserView
@@ -39,16 +36,27 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
     
     override func loadView() {
         
+        appLoginPresenter = AppLoginPresenter()
+        appLoginPresenter?.appLoginViewController = self
+        
         loadAllViews()
         
-        currentView = welcomeView
+        if appLoginPresenter?.getLastLoggedInUser() == nil {
+            currentView = welcomeView
+        } else {
+            currentView = loginView
+        }
+        
+        guard let currentView = currentView else {
+            return
+        }
         
         view = NSView(frame: NSRect(x: 0, y: 0, width: 600, height: 700))
-        view.addSubview(welcomeView)
+        view.addSubview(currentView)
         
-        welcomeView.translatesAutoresizingMaskIntoConstraints = false
-        welcomeView.widthAnchor.constraint(equalToConstant: 600).isActive = true
-        welcomeView.heightAnchor.constraint(equalToConstant: 700).isActive = true
+        currentView.translatesAutoresizingMaskIntoConstraints = false
+        currentView.widthAnchor.constraint(equalToConstant: 600).isActive = true
+        currentView.heightAnchor.constraint(equalToConstant: 700).isActive = true
     }
     
     func loadAllViews() {
@@ -58,8 +66,9 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
         loginView.load(self)
     }
     
-    func changeView(to selectedView: Views) {
+    private func changeView(to selectedView: Views) {
         // detach from parent view
+        previousView = currentView
         currentView?.removeFromSuperview()
         
         switch(selectedView) {
@@ -93,7 +102,7 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
     
     
     
-    @objc func changeViewToRegistration() {
+    func changeViewToRegistration() {
         self.changeView(to: .registrationView)
     }
     
@@ -101,32 +110,55 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
         self.changeView(to: .switchUserView)
     }
     
-    @objc func changeViewToLogin() {
+    func changeViewToLogin() {
         self.changeView(to: .loginView)
     }
     
     
-    @objc func createUser(_ sender: RegistrationView) {
-        let username = registrationView.username.stringValue
-        let password = registrationView.password.stringValue
+    func createUser(_ sender: RegistrationView) {
+        let username = registrationView.usernameTextBox.stringValue
+        let password = registrationView.passwordTextBox.stringValue
+        let image = registrationView.image
         
-        // validate credentials
+        // proceed only if something is entered
         if username.count == 0 {
             return
         } else if password.count == 0 {
             return
         }
         
-        User.users.append(User(username: username, password: password))
-        print("user added to database")
-        print("username:", username)
-        print("passowrd:", password)
-        
-        
-        
-        changeViewToSwitchUser()
+        let success = {
+            [weak self]
+            in
+            sender.responseLabel.stringValue = "User created"
+            sender.responseLabel.textColor = .systemGreen
+            sender.responseLabel.isHidden = false
+            self?.changeViewToSwitchUser()
+        }
+        let failure = {
+            (message: String) in
+            sender.responseLabel.stringValue = message
+            sender.responseLabel.textColor = .systemRed
+            sender.responseLabel.isHidden = false
+        }
+
+        appLoginPresenter?.createUser(username: username, password: password, image: image, onSuccess: success, onFailure: failure)
         
     }
+    
+    func getAvailableUsers() -> [User] {
+        return appLoginPresenter?.getAvailableUsers() ?? []
+        
+    }
+    
+    func getLastLoggedInUser() -> User? {
+        return appLoginPresenter?.getLastLoggedInUser()
+    }
+    
+    func setLastLoggedInUser(user: User) {
+        appLoginPresenter?.setLastLoggedInUser(user: user)
+    }
+    
     
 }
 

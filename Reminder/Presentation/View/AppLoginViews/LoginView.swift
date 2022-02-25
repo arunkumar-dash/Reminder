@@ -10,20 +10,26 @@ import AppKit
 
 class LoginView: NSView, NSGestureRecognizerDelegate {
     private var password = NSSecureTextField()
-    private var lastLoggedInUser = User.getLastLoggedInUser()
     private let incorrectPassword = NSTextField(labelWithString: "Incorrect password")
+    private var parentViewController: AppLoginViewControllerContract?
     
     func load(_ viewController: NSViewController) {
         
-        lastLoggedInUser = User.getLastLoggedInUser()
-        guard let user = lastLoggedInUser else {
+        guard let parentViewController = viewController as? AppLoginViewControllerContract else {
+            return
+        }
+        
+        self.parentViewController = parentViewController
+        
+        guard let lastLoggedInUser = parentViewController.getLastLoggedInUser() else {
             print("No user in db")
             return
         }
         
+        
         let defaultImage = NSImage(named: "user_icon")!
         
-        let username = NSTextField(labelWithString: user.username)
+        let username = NSTextField(labelWithString: lastLoggedInUser.username)
         username.font = NSFont.preferredFont(forTextStyle: .title3)
         username.textColor = .black
         
@@ -32,43 +38,44 @@ class LoginView: NSView, NSGestureRecognizerDelegate {
         password.backgroundColor = .gray
         password.textColor = .white
         password.drawFocusRingMask()
+        password.stringValue = ""
         
         incorrectPassword.isHidden = true
         incorrectPassword.font = NSFont.preferredFont(forTextStyle: .footnote)
         incorrectPassword.textColor = .red
         
-        let userImage = NSImageView(image: user.photo ?? defaultImage)
+        let userImage = NSImageView(image: lastLoggedInUser.image ?? defaultImage)
         userImage.wantsLayer = true
         userImage.layer?.cornerRadius = 100
         
-        let click = NSClickGestureRecognizer(target: self, action: #selector(getPasswordFromUser))
-        userImage.addGestureRecognizer(click)
+        let mouseClick = NSClickGestureRecognizer(target: self, action: #selector(getPasswordFromUser))
+        userImage.addGestureRecognizer(mouseClick)
         
         
-        subviews = [userImage, username, password, incorrectPassword]
+        self.subviews = [userImage, username, password, incorrectPassword]
         
         userImage.translatesAutoresizingMaskIntoConstraints = false
         username.translatesAutoresizingMaskIntoConstraints = false
         password.translatesAutoresizingMaskIntoConstraints = false
         incorrectPassword.translatesAutoresizingMaskIntoConstraints = false
-        
         NSLayoutConstraint.activate([
-            userImage.centerXAnchor.constraint(equalTo: centerXAnchor),
-            userImage.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -50),
+            
+            
+            userImage.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            userImage.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -50),
             userImage.heightAnchor.constraint(equalToConstant: 200),
             userImage.widthAnchor.constraint(equalToConstant: 200),
             
-            username.centerXAnchor.constraint(equalTo: centerXAnchor),
+            username.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             username.topAnchor.constraint(equalTo: userImage.topAnchor, constant: 250),
             
-            password.centerXAnchor.constraint(equalTo: centerXAnchor),
+            password.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             password.topAnchor.constraint(equalTo: username.bottomAnchor, constant: 20),
             password.widthAnchor.constraint(equalToConstant: 250),
             password.heightAnchor.constraint(equalToConstant: 30),
             
-            incorrectPassword.centerXAnchor.constraint(equalTo: centerXAnchor),
+            incorrectPassword.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             incorrectPassword.topAnchor.constraint(equalTo: password.bottomAnchor, constant: 20),
-            
         ])
     }
     
@@ -79,6 +86,9 @@ class LoginView: NSView, NSGestureRecognizerDelegate {
     
     @objc func validatePassword() {
         print("password:", password.stringValue)
+        
+        let lastLoggedInUser = parentViewController?.getLastLoggedInUser()
+        
         if lastLoggedInUser?.password == password.stringValue {
             //log in
             print("logged in")
@@ -97,4 +107,5 @@ class LoginView: NSView, NSGestureRecognizerDelegate {
             validatePassword()
         }
     }
+    
 }

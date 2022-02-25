@@ -17,6 +17,7 @@
 		1D93292327C4F33700088E99 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93292227C4F33700088E99 /* LoginView.swift */; };
 		1D93293127C62B7400088E99 /* AppLoginPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93293027C62B7400088E99 /* AppLoginPresenter.swift */; };
 		1D93293527C6313E00088E99 /* AppLoginViewControllerContract.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93293427C6313E00088E99 /* AppLoginViewControllerContract.swift */; };
+		1D93294927C8FD8C00088E99 /* AppLoginPresenterContract.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93294827C8FD8C00088E99 /* AppLoginPresenterContract.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		1D93292227C4F33700088E99 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		1D93293027C62B7400088E99 /* AppLoginPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoginPresenter.swift; sourceTree = "<group>"; };
 		1D93293427C6313E00088E99 /* AppLoginViewControllerContract.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoginViewControllerContract.swift; sourceTree = "<group>"; };
+		1D93294827C8FD8C00088E99 /* AppLoginPresenterContract.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoginPresenterContract.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				1D93293427C6313E00088E99 /* AppLoginViewControllerContract.swift */,
+				1D93294827C8FD8C00088E99 /* AppLoginPresenterContract.swift */,
 			);
 			path = Contract;
 			sourceTree = "<group>";
@@ -190,6 +193,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D93292127C4F2A100088E99 /* SwitchUserView.swift in Sources */,
+				1D93294927C8FD8C00088E99 /* AppLoginPresenterContract.swift in Sources */,
 				1D93291F27C4F21A00088E99 /* RegistrationView.swift in Sources */,
 				1D93291D27C4F17B00088E99 /* WelcomeView.swift in Sources */,
 				1D93293127C62B7400088E99 /* AppLoginPresenter.swift in Sources */,

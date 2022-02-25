@@ -11,16 +11,20 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet var window: NSWindow!
-    var presenter: AppLoginPresenter?
 
     func applicationWillFinishLaunching(_ notification: Notification) {
         print("app will launch")
-        presenter = AppLoginPresenter(window: window)
         
         let appLoginViewController = AppLoginViewController()
-        presenter?.appLoginViewController = appLoginViewController
         
-        presenter?.viewLoaded()
+        window.contentViewController = appLoginViewController
+        let size = NSSize(width: 600, height: 700)
+        window.maxSize = size
+        window.minSize = size
+
+        // hiding full screen button
+        let maximizeButton = window.standardWindowButton(.zoomButton)
+        maximizeButton?.isHidden = true
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
