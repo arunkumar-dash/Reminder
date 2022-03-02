@@ -8,8 +8,13 @@
 import Foundation
 import AppKit
 
-class SwitchUserView: NSView {
+class SwitchUserView: NSView, AppLoginViewContract {
+    private let selectUserLabel = NSTextField(labelWithString: "Select User")
+    private var userStackView = NSStackView()
+    private let createUserButtonText = NSTextField(labelWithAttributedString: NSAttributedString(string: "Create User", attributes: [.foregroundColor: NSColor.white, .font: NSFont.preferredFont(forTextStyle: .title2)]))
+    private let createUserButton = NSView()
     private var parentViewController: AppLoginViewControllerContract?
+    private var containerScrollView = NSScrollView()
     
     func load(_ viewController: NSViewController) {
         
@@ -19,71 +24,113 @@ class SwitchUserView: NSView {
         
         self.parentViewController = parentViewController
         
-        let createUserButton = NSButton(title: "Create User", target: self, action: #selector(createUser))
+        initializeDefaultValues()
         
-        let selectUserLabel = NSTextField(labelWithString: "Select User")
+        configureSelectUserLabel()
+        
+        configureUserStackView()
+        
+        fillUserStackView()
+        
+        configureCreateUserButton()
+        
+        configureContainerScrollView()
+        
+        addSubviews([selectUserLabel, containerScrollView, createUserButton])
+        
+        addAllLayoutConstraints()
+    }
+    
+    private func initializeDefaultValues() {
+        userStackView = NSStackView()
+        containerScrollView = NSScrollView()
+    }
+    
+    private func configureSelectUserLabel() {
         selectUserLabel.font = NSFont.preferredFont(forTextStyle: .title1)
         selectUserLabel.textColor = .black
-        
-        
-        let userStackView = NSStackView()
+    }
+    
+    private func configureUserStackView() {
         userStackView.orientation = .vertical
         userStackView.wantsLayer = true
-        userStackView.layer?.backgroundColor = NSColor.white.cgColor
-        
-        let availableUserList = parentViewController.getAvailableUsers()
+        userStackView.spacing = 5
+    }
+    
+    private func fillUserStackView() {
+        let availableUserList = parentViewController!.getAvailableUsers()
         
         for user in availableUserList {
-            
             let userView = GetViewForUser(user: user).getView()
             userView.wantsLayer = true
-            userView.layer?.backgroundColor = NSColor.systemRed.cgColor
-            
             
             let mouseClickGesture = NSClickGestureRecognizer(target: self, action: #selector(changeLastLoggedInUser(_:)))
             userView.addGestureRecognizer(mouseClickGesture)
             
             userStackView.addArrangedSubview(userView)
         }
+    }
+    
+    private func configureCreateUserButton() {
+        let mouseClick = NSClickGestureRecognizer(target: self, action: #selector(createUser))
         
-        createUserButton.bezelColor = .red
         
-        
-        let containerScrollView = NSScrollView(frame: NSRect(x: 0, y: 0, width: 300, height: 300))
+        createUserButton.wantsLayer = true
+        createUserButton.layer?.backgroundColor = NSColor(red: 0, green: 0.8, blue: 0, alpha: 0.8).cgColor
+        createUserButton.addGestureRecognizer(mouseClick)
+        createUserButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        createUserButton.widthAnchor.constraint(equalToConstant: 140).isActive = true
+        createUserButton.layer?.cornerRadius = 20
+        createUserButton.addSubview(createUserButtonText)
+    }
+    
+    private func configureContainerScrollView() {
+        containerScrollView = NSScrollView(frame: NSRect(x: 0, y: 0, width: 50, height: 50))
         containerScrollView.documentView = userStackView
-        
-        
-        userStackView.heightAnchor.constraint(equalToConstant: 300).isActive = true
-        userStackView.widthAnchor.constraint(equalToConstant: 300).isActive = true
-        
-        
+        containerScrollView.wantsLayer = true
+        containerScrollView.drawsBackground = false
+        containerScrollView.hasVerticalScroller = true
+        containerScrollView.verticalScrollElasticity = .none
+    }
+    
+    private func addSubviews(_ views: [NSView]) {
+        subviews = views
+    }
+    
+    private func addAllLayoutConstraints() {
+        createUserButtonText.translatesAutoresizingMaskIntoConstraints = false
         containerScrollView.translatesAutoresizingMaskIntoConstraints = false
-        
-        
-        
-        self.subviews = [selectUserLabel, containerScrollView, createUserButton]
-        
-        
         selectUserLabel.translatesAutoresizingMaskIntoConstraints = false
         userStackView.translatesAutoresizingMaskIntoConstraints = false
         createUserButton.translatesAutoresizingMaskIntoConstraints = false
         containerScrollView.translatesAutoresizingMaskIntoConstraints = false
 
         
+        if userStackView.views.count <= 5 {
+            containerScrollView.heightAnchor.constraint(greaterThanOrEqualToConstant: CGFloat(userStackView.views.count * 55 - 5)).isActive = true
+        } else {
+            containerScrollView.heightAnchor.constraint(equalToConstant: 270).isActive = true
+        }
+        
         
         NSLayoutConstraint.activate([
             selectUserLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            selectUserLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 50),
+            selectUserLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 150),
+            
+            
+            userStackView.topAnchor.constraint(equalTo: containerScrollView.topAnchor),
+            userStackView.widthAnchor.constraint(equalToConstant: 300),
             
             
             containerScrollView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            containerScrollView.topAnchor.constraint(equalTo: selectUserLabel.bottomAnchor, constant: 100),
-            containerScrollView.heightAnchor.constraint(equalToConstant: 300),
+            containerScrollView.centerYAnchor.constraint(equalTo: centerYAnchor),
             containerScrollView.widthAnchor.constraint(equalToConstant: 300),
             
             
             createUserButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            createUserButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -30),
+            createUserButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -150),
+            createUserButtonText.centerYAnchor.constraint(equalTo: createUserButton.centerYAnchor),
+            createUserButtonText.centerXAnchor.constraint(equalTo: createUserButton.centerXAnchor),
         ])
     }
     
@@ -109,7 +156,7 @@ class SwitchUserView: NSView {
     }
 }
 
-class IndividualUserView: NSView {
+class IndividualUserView: NSVisualEffectView {
     var user: User?
 }
 
@@ -134,15 +181,18 @@ class GetViewForUser {
         
         let usernameView = NSTextField(labelWithString: username)
         usernameView.textColor = .black
+        usernameView.lineBreakMode = .byTruncatingTail
         
         let userView = IndividualUserView(frame: NSRect(x: 0, y: 0, width: 300, height: 50))
         userView.user = user
+        userView.material = .light
+        userView.blendingMode = .withinWindow
         
         userView.subviews = [userImageView, usernameView]
         
         userView.wantsLayer = true
-        userView.layer?.backgroundColor = NSColor.systemYellow.cgColor
-        userView.layer?.cornerRadius = 10
+//        userView.layer?.backgroundColor = NSColor.systemYellow.cgColor
+        userView.layer?.cornerRadius = 15
         
         
         userImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -157,6 +207,7 @@ class GetViewForUser {
             
             usernameView.leftAnchor.constraint(equalTo: userImageView.rightAnchor, constant: 5),
             usernameView.centerYAnchor.constraint(equalTo: userImageView.centerYAnchor),
+            usernameView.rightAnchor.constraint(equalTo: userView.rightAnchor, constant: -5),
             
             userView.heightAnchor.constraint(equalToConstant: 50),
             userView.widthAnchor.constraint(equalToConstant: 300),

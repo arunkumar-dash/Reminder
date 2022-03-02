@@ -29,8 +29,8 @@ public class AppLoginPresenter: AppLoginPresenterContract {
     }
     
     // use case methods below
-    
-    private var userDatabase: [String: (username: String, password: String, image: NSImage?)] = [:]
+//    private var userDatabase: [String: (username: String, password: String, image: NSImage?)] = [:]
+    private var userDatabase: [String: (username: String, password: String, image: NSImage?)] = ["user1":(username: "user1", password: "popop", image: NSImage(named: "dp"))]
     private func createUserUseCase(username: String, password: String, image: NSImage?, onSuccess successMethod: () -> Void, onFailure failureMethod: (_ message: String) -> Void) {
         
         if isUserExists(username: username) {
@@ -57,10 +57,11 @@ public class AppLoginPresenter: AppLoginPresenterContract {
         return true
     }
     
-//    private var availableUsersList: [User] = []
-    private var availableUsersList: [User] = [User(username: "user1", password: "popop", image: NSImage(named: "dp"))]
+    
+    private var availableUsersList: [User] = []
     
     private func getAvailableUsersFromDatabase() -> [User] {
+        availableUsersList = []
         for user in userDatabase.values {
             let user = User(username: user.username, password: user.password, image: user.image)
             availableUsersList.append(user)

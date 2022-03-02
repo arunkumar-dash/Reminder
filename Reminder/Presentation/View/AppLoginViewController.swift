@@ -9,14 +9,13 @@ import Foundation
 import AppKit
 
 class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
-    private var currentView: NSView? = nil
-    private var previousView: NSView? = nil
+    private var currentView: AppLoginViewContract? = nil
+    private var previousViews: [AppLoginViewContract] = []
     private let welcomeView = WelcomeView()
     private let registrationView = RegistrationView()
     private let switchUserView = SwitchUserView()
     private let loginView = LoginView()
     var appLoginPresenter: AppLoginPresenterContract?
-    
     
     
     private enum Views {
@@ -31,7 +30,7 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
         print("view loaded")
         
         view.wantsLayer = true
-        view.layer?.backgroundColor = .white
+        view.layer?.contents = NSImage(named: "background")
     }
     
     override func loadView() {
@@ -39,13 +38,14 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
         appLoginPresenter = AppLoginPresenter()
         appLoginPresenter?.appLoginViewController = self
         
-        loadAllViews()
         
         if appLoginPresenter?.getLastLoggedInUser() == nil {
             currentView = welcomeView
         } else {
             currentView = loginView
         }
+        
+        currentView?.load(self)
         
         guard let currentView = currentView else {
             return
@@ -59,47 +59,70 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
         currentView.heightAnchor.constraint(equalToConstant: 700).isActive = true
     }
     
-    func loadAllViews() {
-        welcomeView.load(self)
-        registrationView.load(self)
-        switchUserView.load(self)
-        loginView.load(self)
+    private func fadeIn(_ view: NSView) {
+        let fadeInAnimation = CABasicAnimation(keyPath: "opacity")
+        fadeInAnimation.fromValue = 0.5
+        fadeInAnimation.toValue = view.alphaValue
+        fadeInAnimation.duration = 0.25
+        self.view.wantsLayer = true
+        self.view.layer?.add(fadeInAnimation, forKey: nil)
     }
     
     private func changeView(to selectedView: Views) {
         // detach from parent view
-        previousView = currentView
+        if let currentView = currentView {
+            previousViews.append(currentView)
+        }
         currentView?.removeFromSuperview()
         
         switch(selectedView) {
         case .welcomeView:
-            welcomeView.load(self)
             currentView = welcomeView
             
         case .registrationView:
-            registrationView.load(self)
             currentView = registrationView
             
         case .switchUserView:
-            switchUserView.load(self)
             currentView = switchUserView
             
         case .loginView:
-            loginView.load(self)
             currentView = loginView
         }
         
+        guard let currentView = currentView else {
+            print("currentView is nil")
+            return
+        }
+
+        
+        fadeIn(currentView)
         // add to subview
-        view.addSubview(currentView!)
+        view.addSubview(currentView)
+        currentView.load(self)
         
         
-        currentView?.translatesAutoresizingMaskIntoConstraints = false
+        currentView.translatesAutoresizingMaskIntoConstraints = false
         
-        currentView?.widthAnchor.constraint(equalToConstant: 600).isActive = true
-        currentView?.heightAnchor.constraint(equalToConstant: 700).isActive = true
+        currentView.widthAnchor.constraint(equalToConstant: 600).isActive = true
+        currentView.heightAnchor.constraint(equalToConstant: 700).isActive = true
         
     }
     
+    func navigateBackToPreviousView() {
+        currentView?.removeFromSuperview()
+        currentView = previousViews.popLast()
+        guard let currentView = currentView else {
+            return
+        }
+        fadeIn(currentView)
+        view.addSubview(currentView)
+        currentView.load(self)
+        
+        currentView.translatesAutoresizingMaskIntoConstraints = false
+        
+        currentView.widthAnchor.constraint(equalToConstant: 600).isActive = true
+        currentView.heightAnchor.constraint(equalToConstant: 700).isActive = true
+    }
     
     
     func changeViewToRegistration() {
@@ -118,7 +141,7 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
     func createUser(_ sender: RegistrationView) {
         let username = registrationView.usernameTextBox.stringValue
         let password = registrationView.passwordTextBox.stringValue
-        let image = registrationView.image
+        let image = registrationView.userImageView.image
         
         // proceed only if something is entered
         if username.count == 0 {
@@ -135,6 +158,7 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
             sender.responseLabel.isHidden = false
             self?.changeViewToSwitchUser()
         }
+        
         let failure = {
             (message: String) in
             sender.responseLabel.stringValue = message
@@ -159,6 +183,7 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
         appLoginPresenter?.setLastLoggedInUser(user: user)
     }
     
-    
 }
+
+
 

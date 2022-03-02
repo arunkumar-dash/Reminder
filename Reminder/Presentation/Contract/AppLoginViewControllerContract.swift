@@ -15,6 +15,10 @@ protocol AppLoginViewControllerContract: NSViewController {
     
     func changeViewToLogin()
     
+    func changeViewToSwitchUser()
+    
+    func navigateBackToPreviousView()
+    
     func getAvailableUsers() -> [User]
     
     func getLastLoggedInUser() -> User?
