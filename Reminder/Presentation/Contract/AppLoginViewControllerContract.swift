@@ -7,6 +7,7 @@
 
 import Foundation
 import AppKit
+import ReminderBackEnd
 
 protocol AppLoginViewControllerContract: NSViewController {
     func createUser(_ sender: RegistrationView)
@@ -19,10 +20,10 @@ protocol AppLoginViewControllerContract: NSViewController {
     
     func navigateBackToPreviousView()
     
-    func getAvailableUsers() -> [User]
+    func getAllUsers(success: @escaping ([User]) -> Void, failure: @escaping (String) -> Void)
     
-    func getLastLoggedInUser() -> User?
+    func getLastLoggedInUser(success: @escaping (User) -> Void, failure: @escaping (String) -> Void)
     
-    func setLastLoggedInUser(user: User)
+    func setLastLoggedInUser(_ user: User)
     
 }

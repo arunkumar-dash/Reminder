@@ -7,6 +7,7 @@
 
 import Foundation
 import AppKit
+import ReminderBackEnd
 
 class SwitchUserView: NSView, AppLoginViewContract {
     private let selectUserLabel = NSTextField(labelWithString: "Select User")
@@ -58,9 +59,29 @@ class SwitchUserView: NSView, AppLoginViewContract {
     }
     
     private func fillUserStackView() {
-        let availableUserList = parentViewController!.getAvailableUsers()
+        guard let parentViewController = parentViewController else {
+            return
+        }
+
+        let success: ([User]) -> Void = {
+            [weak self]
+            (users) in
+            self?.fillUserStackView(users: users)
+        }
         
-        for user in availableUserList {
+        let failure: (String) -> Void = {
+            [weak self]
+            (message: String) in
+            print(message)
+            let emptyUsersList: [User] = []
+            self?.fillUserStackView(users: emptyUsersList)
+        }
+        parentViewController.getAllUsers(success: success, failure: failure)
+    }
+    
+    private func fillUserStackView(users: [User]) {
+        
+        for user in users {
             let userView = GetViewForUser(user: user).getView()
             userView.wantsLayer = true
             
@@ -90,7 +111,6 @@ class SwitchUserView: NSView, AppLoginViewContract {
         containerScrollView.wantsLayer = true
         containerScrollView.drawsBackground = false
         containerScrollView.hasVerticalScroller = true
-        containerScrollView.verticalScrollElasticity = .none
     }
     
     private func addSubviews(_ views: [NSView]) {
@@ -108,8 +128,10 @@ class SwitchUserView: NSView, AppLoginViewContract {
         
         if userStackView.views.count <= 5 {
             containerScrollView.heightAnchor.constraint(greaterThanOrEqualToConstant: CGFloat(userStackView.views.count * 55 - 5)).isActive = true
+            containerScrollView.verticalScrollElasticity = .none
         } else {
             containerScrollView.heightAnchor.constraint(equalToConstant: 270).isActive = true
+            containerScrollView.verticalScrollElasticity = .allowed
         }
         
         
@@ -143,8 +165,8 @@ class SwitchUserView: NSView, AppLoginViewContract {
             return
         }
 
-        parentViewController?.setLastLoggedInUser(user: currentUser)
-        print("user:", currentUser.username, "was clicked")
+        parentViewController?.setLastLoggedInUser(currentUser)
+        print("user:", currentUser.username, "was selected")
         
         if let parentViewController = parentViewController {
             parentViewController.changeViewToLogin()
@@ -167,7 +189,11 @@ class GetViewForUser {
     
     init(user: User) {
         self.user = user
-        self.userImage = user.image
+        if let userImageURL = user.imageURL {
+            self.userImage = NSImage.init(contentsOfFile: userImageURL.relativePath)
+        } else {
+            self.userImage = nil
+        }
         self.username = user.username
     }
     
@@ -178,6 +204,7 @@ class GetViewForUser {
         let userImageView = NSImageView(image: userImage ?? defaultImage)
         userImageView.wantsLayer = true
         userImageView.layer?.cornerRadius = 15
+        userImageView.imageScaling = NSImageScaling.scaleAxesIndependently
         
         let usernameView = NSTextField(labelWithString: username)
         usernameView.textColor = .black
@@ -191,7 +218,7 @@ class GetViewForUser {
         userView.subviews = [userImageView, usernameView]
         
         userView.wantsLayer = true
-//        userView.layer?.backgroundColor = NSColor.systemYellow.cgColor
+        
         userView.layer?.cornerRadius = 15
         
         
@@ -218,15 +245,3 @@ class GetViewForUser {
     
 }
 
-class User {
-    
-    let image: NSImage?
-    let username: String
-    let password: String
-    init(username: String, password: String, image: NSImage? = nil) {
-        self.username = username
-        self.password = password
-        self.image = image
-    }
-    
-}

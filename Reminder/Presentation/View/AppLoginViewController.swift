@@ -7,6 +7,7 @@
 
 import Foundation
 import AppKit
+import ReminderBackEnd
 
 class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
     private var currentView: AppLoginViewContract? = nil
@@ -17,6 +18,8 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
     private let loginView = LoginView()
     var appLoginPresenter: AppLoginPresenterContract?
     
+    deinit {
+    }
     
     private enum Views {
         case welcomeView
@@ -39,24 +42,55 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
         appLoginPresenter?.appLoginViewController = self
         
         
-        if appLoginPresenter?.getLastLoggedInUser() == nil {
-            currentView = welcomeView
-        } else {
-            currentView = loginView
+        let success: (User) -> Void = {
+            [weak self]
+            (user) in
+            self?.currentView = self?.loginView
+            
+            guard let currentView = self?.currentView else {
+                return
+            }
+            
+            
+            self?.view = NSView(frame: NSRect(x: 0, y: 0, width: 600, height: 700))
+            guard let view = self?.view else { return }
+            view.addSubview(currentView)
+            if let viewController = self {
+                self?.currentView?.load(viewController)
+            }
+            
+            currentView.translatesAutoresizingMaskIntoConstraints = false
+            currentView.widthAnchor.constraint(equalToConstant: 600).isActive = true
+            currentView.heightAnchor.constraint(equalToConstant: 700).isActive = true
+            currentView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+            currentView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         }
         
-        currentView?.load(self)
-        
-        guard let currentView = currentView else {
-            return
+        let failure: (String) -> Void = {
+            [weak self]
+            (message) in
+            print(message)
+            self?.currentView = self?.welcomeView
+            
+            guard let currentView = self?.currentView else {
+                return
+            }
+            
+            self?.view = NSView()
+            guard let view = self?.view else { return }
+            view.addSubview(currentView)
+            if let viewController = self {
+                self?.currentView?.load(viewController)
+            }
+            
+            currentView.translatesAutoresizingMaskIntoConstraints = false
+            currentView.widthAnchor.constraint(equalToConstant: 600).isActive = true
+            currentView.heightAnchor.constraint(equalToConstant: 700).isActive = true
+            currentView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+            currentView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         }
         
-        view = NSView(frame: NSRect(x: 0, y: 0, width: 600, height: 700))
-        view.addSubview(currentView)
-        
-        currentView.translatesAutoresizingMaskIntoConstraints = false
-        currentView.widthAnchor.constraint(equalToConstant: 600).isActive = true
-        currentView.heightAnchor.constraint(equalToConstant: 700).isActive = true
+        appLoginPresenter?.getLastLoggedInUser(onSuccess: success, onFailure: failure)
     }
     
     private func fadeIn(_ view: NSView) {
@@ -105,6 +139,8 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
         
         currentView.widthAnchor.constraint(equalToConstant: 600).isActive = true
         currentView.heightAnchor.constraint(equalToConstant: 700).isActive = true
+        currentView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        currentView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
     }
     
@@ -141,7 +177,7 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
     func createUser(_ sender: RegistrationView) {
         let username = registrationView.usernameTextBox.stringValue
         let password = registrationView.passwordTextBox.stringValue
-        let image = registrationView.userImageView.image
+        let imageURL = registrationView.userImageURL
         
         // proceed only if something is entered
         if username.count == 0 {
@@ -152,8 +188,8 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
         
         let success = {
             [weak self]
-            in
-            sender.responseLabel.stringValue = "User created"
+            (username: String) in
+            sender.responseLabel.stringValue = "User \(username) created"
             sender.responseLabel.textColor = .systemGreen
             sender.responseLabel.isHidden = false
             self?.changeViewToSwitchUser()
@@ -166,23 +202,21 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
             sender.responseLabel.isHidden = false
         }
 
-        appLoginPresenter?.createUser(username: username, password: password, image: image, onSuccess: success, onFailure: failure)
+        appLoginPresenter?.createUser(username: username, password: password, imageURL: imageURL, onSuccess: success, onFailure: failure)
         
     }
     
-    func getAvailableUsers() -> [User] {
-        return appLoginPresenter?.getAvailableUsers() ?? []
-        
+    func getAllUsers(success: @escaping ([User]) -> Void, failure: @escaping (String) -> Void) {
+        appLoginPresenter?.getAllUsers(onSuccess: success, onFailure: failure)
     }
     
-    func getLastLoggedInUser() -> User? {
-        return appLoginPresenter?.getLastLoggedInUser()
+    func getLastLoggedInUser(success: @escaping (User) -> Void, failure: @escaping (String) -> Void) {
+        appLoginPresenter?.getLastLoggedInUser(onSuccess: success, onFailure: failure)
     }
     
-    func setLastLoggedInUser(user: User) {
+    func setLastLoggedInUser(_ user: User) {
         appLoginPresenter?.setLastLoggedInUser(user: user)
     }
-    
 }
 
 

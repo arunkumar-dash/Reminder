@@ -14,22 +14,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillFinishLaunching(_ notification: Notification) {
         print("app will launch")
-        
-        let appLoginViewController = AppLoginViewController()
-        
-        window.contentViewController = appLoginViewController
-        let size = NSSize(width: 600, height: 700)
-        window.maxSize = size
-        window.minSize = size
-
-        // hiding full screen button
-        let maximizeButton = window.standardWindowButton(.zoomButton)
-        maximizeButton?.isHidden = true
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
         print("app launched")
+        
+        let appLoginViewController = AppLoginViewController()
+        
+        let size = NSSize(width: 600, height: 700)
+        window.setContentSize(size)
+        
+        window.contentViewController = appLoginViewController
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {

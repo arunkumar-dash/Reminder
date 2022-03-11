@@ -14,6 +14,7 @@ class RegistrationView: NSView, AppLoginViewContract {
     var passwordTextBox = NSSecureTextField()
     // should get image
     var userImageView = NSImageView(image: NSImage(named: "user_icon")!)
+    var userImageURL: URL? = nil
     var responseLabel: NSTextField = NSTextField(labelWithString: "")
     private let addButtonImage = NSImageView(image: NSImage(named: "plus_sign")!)
     private let navigateNextButton = NSImageView(image: NSImage(named: "right_arrow")!)
@@ -48,8 +49,7 @@ class RegistrationView: NSView, AppLoginViewContract {
         addSubviews([userImageView, usernameTextBox, passwordTextBox, responseLabel, navigateBackButton, addButtonImage, navigateNextButton])
         
         
-        // setting as first responder
-        setFirstResponder(usernameTextBox)
+        setFirstResponder()
         
         addAllLayoutConstraints()
     }
@@ -72,9 +72,10 @@ class RegistrationView: NSView, AppLoginViewContract {
         /// adding points manually as `userImageView.frame` is set after constraints are set
         addTrackingArea(NSTrackingArea(rect: NSRect(origin: CGPoint(x: 200, y: 370), size: CGSize(width: 200, height: 200)), options: [.mouseEnteredAndExited, .mouseMoved, .activeInActiveApp], owner: self))
     
-        let mouseClickToAddImage = NSClickGestureRecognizer(target: self, action: #selector(getUserImage))
-        userImageView.addGestureRecognizer(mouseClickToAddImage)
+        let mouseClickToAddImageInUserImage = NSClickGestureRecognizer(target: self, action: #selector(getUserImage))
+        userImageView.addGestureRecognizer(mouseClickToAddImageInUserImage)
         
+        let mouseClickToAddImage = NSClickGestureRecognizer(target: self, action: #selector(getUserImage))
         addButtonImage.image?.size = NSSize(width: 50, height: 50)
         addButtonImage.isHidden = true
         addButtonImage.addGestureRecognizer(mouseClickToAddImage)
@@ -187,8 +188,8 @@ class RegistrationView: NSView, AppLoginViewContract {
         ])
     }
     
-    private func setFirstResponder(_ responder: NSResponder) {
-        window?.makeFirstResponder(responder)
+    private func setFirstResponder() {
+        window?.makeFirstResponder(self.usernameTextBox)
     }
     
     @objc func createUser() {
@@ -230,17 +231,26 @@ class RegistrationView: NSView, AppLoginViewContract {
     }
     
     @objc func getUserImage() {
+        defer {
+            addButtonImage.isHidden = true
+        }
+        
         let panel = NSOpenPanel()
         panel.canChooseDirectories = false
         panel.canChooseFiles = true
         panel.isOpaque = false
         panel.hidesOnDeactivate = true
-        panel.allowedFileTypes = ["jpg", "jpeg", "png", "tiff", "qtif", "pict"]
+//        panel.allowedFileTypes = ["jpg", "jpeg", "png", "tiff", "qtif", "pict"]
         panel.allowsMultipleSelection = false
+        
         guard panel.runModal() == .OK, let imageURL = panel.url else { return }
-        if let userImage = NSImage(contentsOf: imageURL) {
+        
+        if let userImage = NSImage(contentsOfFile: imageURL.relativePath) {
             self.userImageView.image = userImage
             self.userImageView.needsDisplay = true
+            self.userImageURL = imageURL
+        } else {
+            print("Invalid format")
         }
     }
     
@@ -257,14 +267,5 @@ class RegistrationView: NSView, AppLoginViewContract {
             addButtonImage.isHidden = true
         }
     }
-    
-    override func mouseMoved(with event: NSEvent) {
-        if userImageView.frame.contains(event.locationInWindow) {
-            addButtonImage.isHidden = false
-        } else {
-            addButtonImage.isHidden = true
-        }
-    }
-    
 }
 

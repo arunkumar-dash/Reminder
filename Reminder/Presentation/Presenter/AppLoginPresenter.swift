@@ -7,79 +7,87 @@
 
 import Foundation
 import AppKit
+import ReminderBackEnd
 
 public class AppLoginPresenter: AppLoginPresenterContract {
     weak var appLoginViewController: AppLoginViewControllerContract?
     
-    func createUser(username: String, password: String, image: NSImage?, onSuccess success: () -> Void, onFailure failure: (String) -> Void) {
+    func createUser(username: String, password: String, imageURL: URL?, onSuccess success: @escaping (String) -> Void, onFailure failure: @escaping (String) -> Void) {
         
-        createUserUseCase(username: username, password: password, image: image, onSuccess: success, onFailure: failure)
+        let request = CreateUserRequest(username: username, password: password, imageURL: imageURL)
+        let database = CreateUserDatabaseService()
+        let dataManager = CreateUserDataManager(database: database)
+        let createUser = CreateUser(dataManager: dataManager)
+        createUser.execute(request: request, onSuccess: {
+            (response) in
+            success(response.username)
+        }, onFailure: {
+            (error) in
+            if error.status == CreateUserError.Status.unknownError {
+                failure("User name taken")
+            } else {
+                failure("Creation failed")
+            }
+        })
     }
     
-    func getAvailableUsers() -> [User] {
-        return getAvailableUsersFromDatabase()
+    func getAllUsers(onSuccess success: @escaping ([User]) -> Void, onFailure failure: @escaping (String) -> Void) {
+        let request = GetAllUsersRequest()
+        let database = GetAllUsersDatabaseService()
+        let dataManager = GetAllUsersDataManager(database: database)
+        let getAllUsers = GetAllUsers(dataManager: dataManager)
+        let success = {
+            (response: GetAllUsersResponse) in
+            success(response.users)
+        }
+        let failure = {
+            (error: GetAllUsersError) in
+            if error.status == .unknownError {
+                failure("No Previous Users Found")
+            } else if error.status == .networkUnavailable {
+                failure("No Database Connection")
+            }
+        }
+        getAllUsers.execute(request: request, onSuccess: success, onFailure: failure)
     }
     
-    func getLastLoggedInUser() -> User? {
-        return getLastLoggedInUserFromDatabase()
+    func getLastLoggedInUser(onSuccess success: @escaping (User) -> Void, onFailure failure: @escaping (String) -> Void) {
+        let request = GetLastLoggedInUserRequest()
+        let database = GetLastLoggedInUserDatabaseService()
+        let dataManager = GetLastLoggedInUserDataManager(database: database)
+        let getLastLoggedInUser = GetLastLoggedInUser(dataManager: dataManager)
+        let success = {
+            (response: GetLastLoggedInUserResponse) in
+            success(response.user)
+        }
+        let failure = {
+            (error: GetLastLoggedInUserError) in
+            if error.status == .unknownError {
+                failure("No Last Logged In User Found")
+            } else if error.status == .networkUnavailable {
+                failure("No Database Connection")
+            }
+        }
+        getLastLoggedInUser.execute(request: request, onSuccess: success, onFailure: failure)
     }
     
     func setLastLoggedInUser(user: User) {
-        setLastLoggedInUserToDatabase(user: user)
-    }
-    
-    // use case methods below
-//    private var userDatabase: [String: (username: String, password: String, image: NSImage?)] = [:]
-    private var userDatabase: [String: (username: String, password: String, image: NSImage?)] = ["user1":(username: "user1", password: "popop", image: NSImage(named: "dp"))]
-    private func createUserUseCase(username: String, password: String, image: NSImage?, onSuccess successMethod: () -> Void, onFailure failureMethod: (_ message: String) -> Void) {
-        
-        if isUserExists(username: username) {
-            let message = "User name taken"
-            failureMethod(message)
-        } else if addToDatabase(username: username, password: password, image: image) {
-            successMethod()
-        } else {
-            let message = "Error adding account to database"
-            failureMethod(message)
+        let request = SetLastLoggedInUserRequest(user: user)
+        let success = {
+            (response: SetLastLoggedInUserResponse) in
+            print("Last logged in User: \(response.user.username)")
         }
-        
-    }
-    
-    private func isUserExists(username: String) -> Bool {
-        if userDatabase.keys.contains(username) {
-            return true
+        let failure = {
+            (error: SetLastLoggedInUserError) in
+            if error.status == .unknownError {
+                print("Failed to set last logged in user")
+            } else if error.status == .networkUnavailable {
+                print("No Database Connection")
+            }
         }
-        return false
+        let database = SetLastLoggedInUserDatabaseService()
+        let dataManager = SetLastLoggedInUserDataManager(database: database)
+        let setLastLoggedInUser = SetLastLoggedInUser(dataManager: dataManager)
+        setLastLoggedInUser.execute(request: request, onSuccess: success, onFailure: failure)
     }
-    
-    private func addToDatabase(username: String, password: String, image: NSImage?) -> Bool {
-        userDatabase[username] = (username, password, image)
-        return true
-    }
-    
-    
-    private var availableUsersList: [User] = []
-    
-    private func getAvailableUsersFromDatabase() -> [User] {
-        availableUsersList = []
-        for user in userDatabase.values {
-            let user = User(username: user.username, password: user.password, image: user.image)
-            availableUsersList.append(user)
-        }
-        return availableUsersList
-    }
-    
-    private var lastLoggedInUser: User? = nil
-//    private var lastLoggedInUser: User? = User(username: "Abc bca", password: "pass123")
-
-    
-    private func getLastLoggedInUserFromDatabase() -> User? {
-        return lastLoggedInUser
-    }
-    
-    private func setLastLoggedInUserToDatabase(user: User) {
-        lastLoggedInUser = user
-    }
-        
-    // use case methods above
 }

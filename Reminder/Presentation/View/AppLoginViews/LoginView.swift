@@ -7,6 +7,7 @@
 
 import Foundation
 import AppKit
+import ReminderBackEnd
 
 class LoginView: NSView, NSGestureRecognizerDelegate, AppLoginViewContract {
     private var username = NSTextField()
@@ -17,7 +18,7 @@ class LoginView: NSView, NSGestureRecognizerDelegate, AppLoginViewContract {
     private var parentViewController: AppLoginViewControllerContract?
     private let navigateNextButton = NSImageView(image: NSImage(named: "right_arrow")!)
     private let switchUserButton = NSView()
-    private let lastLoggedInUser: User? = nil
+    private var lastLoggedInUser: User? = nil
     
     
     func load(_ viewController: NSViewController) {
@@ -31,13 +32,20 @@ class LoginView: NSView, NSGestureRecognizerDelegate, AppLoginViewContract {
         
         configureSwitchUserButton()
         
-        guard let lastLoggedInUser = parentViewController.getLastLoggedInUser() else {
-            print("No user in db")
-            return
+        let success: (User) -> Void = {
+            [weak self]
+            (user) in
+            self?.lastLoggedInUser = user
         }
         
-        username = NSTextField(labelWithAttributedString: NSAttributedString(string: lastLoggedInUser.username, attributes: [.font: NSFont.preferredFont(forTextStyle: .largeTitle), .foregroundColor: NSColor.white]))
+        let failure = {
+            (message: String) in
+            print(message)
+        }
         
+        parentViewController.getLastLoggedInUser(success: success, failure: failure)
+        
+        configureUsernameTextBox()
         
         configurePasswordTextBox()
         
@@ -47,29 +55,24 @@ class LoginView: NSView, NSGestureRecognizerDelegate, AppLoginViewContract {
         
         configureIncorrectPasswordLabel()
         
-        let defaultImage = NSImage(named: "user_icon")!
-        defaultImage.size = NSSize(width: 200, height: 200)
+        configureUserImage()
         
-        userImage = NSImageView(image: lastLoggedInUser.image ?? defaultImage)
-        
-        configureUserImage(userImage)
-        
-        let mouseClick = NSClickGestureRecognizer(target: self, action: #selector(getPasswordFromUser))
+        let mouseClick = NSClickGestureRecognizer(target: self, action: #selector(getPassword))
         addGestureRecognizer(mouseClick)
         
         addSubviews([userImage, username, passwordTextBox, incorrectPasswordLabel, navigateNextButton, enterPasswordLabel, switchUserButton])
         
         addAllLayoutConstraints()
         
-        setFirstResponder(passwordTextBox)
+        setFirstResponder()
     }
     
     private func initializeDefaultValues() {
         passwordTextBox.stringValue = ""
     }
     
-    private func setFirstResponder(_ responder: NSResponder) {
-        window?.makeFirstResponder(responder)
+    private func setFirstResponder() {
+        window?.makeFirstResponder(self.passwordTextBox)
     }
     
     private func unhideAnimationView(_ view: NSView) {
@@ -112,6 +115,19 @@ class LoginView: NSView, NSGestureRecognizerDelegate, AppLoginViewContract {
         ])
     }
     
+    private func configureUsernameTextBox() {
+        guard let lastLoggedInUser = lastLoggedInUser else {
+            return
+        }
+        
+        self.username = NSTextField(labelWithAttributedString: NSAttributedString(string: lastLoggedInUser.username, attributes: [.font: NSFont.preferredFont(forTextStyle: .largeTitle), .foregroundColor: NSColor.white]))
+        
+        let shadow = NSShadow()
+        shadow.shadowBlurRadius = 1
+        shadow.shadowColor = .black
+        username.shadow = shadow
+    }
+    
     private func configurePasswordTextBox() {
         passwordTextBox.placeholderString = "Enter password"
         passwordTextBox.placeholderAttributedString = NSAttributedString(string: "Enter password", attributes: [.foregroundColor: NSColor.init(white: 1, alpha: 0.5), .font: NSFont.preferredFont(forTextStyle: .title3)])
@@ -140,8 +156,13 @@ class LoginView: NSView, NSGestureRecognizerDelegate, AppLoginViewContract {
     }
     
     private func configureEnterPasswordLabel() {
+        enterPasswordLabel.alphaValue = 1
         enterPasswordLabel.font = NSFont.preferredFont(forTextStyle: .title3)
-        enterPasswordLabel.textColor = .systemGray
+        enterPasswordLabel.textColor = .white
+        let shadow = NSShadow()
+        shadow.shadowBlurRadius = 3
+        shadow.shadowColor = .black
+        enterPasswordLabel.shadow = shadow
     }
     
     private func configureIncorrectPasswordLabel() {
@@ -150,9 +171,23 @@ class LoginView: NSView, NSGestureRecognizerDelegate, AppLoginViewContract {
         incorrectPasswordLabel.textColor = .red
     }
     
-    private func configureUserImage(_ userImage: NSImageView) {
+    private func configureUserImage() {
+        guard let lastLoggedInUser = lastLoggedInUser else {
+            return
+        }
+        
+        let defaultImage = NSImage(named: "user_icon")!
+        defaultImage.size = NSSize(width: 200, height: 200)
+        
+        self.userImage = NSImageView(image: defaultImage)
+        
+        if let imageURL = lastLoggedInUser.imageURL {
+            self.userImage = NSImageView(image: NSImage(contentsOfFile: imageURL.relativePath) ?? defaultImage)
+        }
+        
         userImage.wantsLayer = true
         userImage.layer?.cornerRadius = 100
+        userImage.imageScaling = NSImageScaling.scaleAxesIndependently
     }
     
     private func addSubviews(_ views: [NSView]) {
@@ -203,9 +238,21 @@ class LoginView: NSView, NSGestureRecognizerDelegate, AppLoginViewContract {
         ])
     }
     
-    @objc func getPasswordFromUser() {
-        passwordTextBox.isHidden = false
-        passwordTextBox.action = #selector(validatePassword)
+    @objc func getPassword() {
+        setFirstResponder()
+        showPasswordOptions()
+    }
+    
+    func showPasswordOptions() {
+        if self.enterPasswordLabel.alphaValue > 0 {
+            self.enterPasswordLabel.alphaValue = 0
+        }
+        if self.passwordTextBox.isHidden {
+            unhideAnimationView(self.passwordTextBox)
+        }
+        if self.navigateNextButton.isHidden {
+            unhideAnimationView(self.navigateNextButton)
+        }
     }
     
     @objc func validatePassword() {
@@ -213,8 +260,6 @@ class LoginView: NSView, NSGestureRecognizerDelegate, AppLoginViewContract {
             return
         }
         print("password:", passwordTextBox.stringValue)
-        
-        let lastLoggedInUser = parentViewController?.getLastLoggedInUser()
         
         if lastLoggedInUser?.password == passwordTextBox.stringValue {
             //log in
@@ -230,15 +275,7 @@ class LoginView: NSView, NSGestureRecognizerDelegate, AppLoginViewContract {
     
     // submit on pressing return key
     override func keyUp(with event: NSEvent) {
-        if self.enterPasswordLabel.alphaValue > 0 {
-            self.enterPasswordLabel.alphaValue = 0
-        }
-        if self.passwordTextBox.isHidden {
-            unhideAnimationView(self.passwordTextBox)
-        }
-        if self.navigateNextButton.isHidden {
-            unhideAnimationView(self.navigateNextButton)
-        }
+        showPasswordOptions()
         let RETURN_KEY_CODE = 36
         if event.keyCode == RETURN_KEY_CODE {
             validatePassword()
@@ -249,4 +286,7 @@ class LoginView: NSView, NSGestureRecognizerDelegate, AppLoginViewContract {
         self.parentViewController?.changeViewToSwitchUser()
     }
     
+    override func viewDidMoveToWindow() {
+        setFirstResponder()
+    }
 }
