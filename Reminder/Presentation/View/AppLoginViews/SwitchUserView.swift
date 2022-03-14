@@ -37,7 +37,7 @@ class SwitchUserView: NSView, AppLoginViewContract {
         
         configureContainerScrollView()
         
-        addSubviews([selectUserLabel, containerScrollView, createUserButton])
+        addAllSubviews()
         
         addAllLayoutConstraints()
     }
@@ -67,6 +67,7 @@ class SwitchUserView: NSView, AppLoginViewContract {
             [weak self]
             (users) in
             self?.fillUserStackView(users: users)
+            self?.setUserStackViewHeightConstraints()
         }
         
         let failure: (String) -> Void = {
@@ -79,16 +80,26 @@ class SwitchUserView: NSView, AppLoginViewContract {
         parentViewController.getAllUsers(success: success, failure: failure)
     }
     
+    private func setUserStackViewHeightConstraints() {
+        if userStackView.views.count <= 5 {
+            containerScrollView.heightAnchor.constraint(greaterThanOrEqualToConstant: CGFloat(userStackView.views.count * 55 - 5)).isActive = true
+            containerScrollView.verticalScrollElasticity = .none
+        } else {
+            containerScrollView.heightAnchor.constraint(equalToConstant: 270).isActive = true
+            containerScrollView.verticalScrollElasticity = .allowed
+        }
+    }
+    
     private func fillUserStackView(users: [User]) {
         
         for user in users {
             let userView = GetViewForUser(user: user).getView()
-            userView.wantsLayer = true
             
-            let mouseClickGesture = NSClickGestureRecognizer(target: self, action: #selector(changeLastLoggedInUser(_:)))
+            let mouseClickGesture = NSClickGestureRecognizer(target: self, action: #selector(SwitchUserView.changeLastLoggedInUser(_:)))
             userView.addGestureRecognizer(mouseClickGesture)
             
             userStackView.addArrangedSubview(userView)
+            
         }
     }
     
@@ -113,8 +124,8 @@ class SwitchUserView: NSView, AppLoginViewContract {
         containerScrollView.hasVerticalScroller = true
     }
     
-    private func addSubviews(_ views: [NSView]) {
-        subviews = views
+    private func addAllSubviews() {
+        subviews = [selectUserLabel, containerScrollView, createUserButton]
     }
     
     private func addAllLayoutConstraints() {
@@ -125,30 +136,22 @@ class SwitchUserView: NSView, AppLoginViewContract {
         createUserButton.translatesAutoresizingMaskIntoConstraints = false
         containerScrollView.translatesAutoresizingMaskIntoConstraints = false
 
-        
-        if userStackView.views.count <= 5 {
-            containerScrollView.heightAnchor.constraint(greaterThanOrEqualToConstant: CGFloat(userStackView.views.count * 55 - 5)).isActive = true
-            containerScrollView.verticalScrollElasticity = .none
-        } else {
-            containerScrollView.heightAnchor.constraint(equalToConstant: 270).isActive = true
-            containerScrollView.verticalScrollElasticity = .allowed
-        }
-        
+        setUserStackViewHeightConstraints()
         
         NSLayoutConstraint.activate([
             selectUserLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             selectUserLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 150),
-            
-            
+
+
             userStackView.topAnchor.constraint(equalTo: containerScrollView.topAnchor),
             userStackView.widthAnchor.constraint(equalToConstant: 300),
-            
-            
+
+
             containerScrollView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             containerScrollView.centerYAnchor.constraint(equalTo: centerYAnchor),
             containerScrollView.widthAnchor.constraint(equalToConstant: 300),
-            
-            
+
+
             createUserButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             createUserButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -150),
             createUserButtonText.centerYAnchor.constraint(equalTo: createUserButton.centerYAnchor),
@@ -166,7 +169,6 @@ class SwitchUserView: NSView, AppLoginViewContract {
         }
 
         parentViewController?.setLastLoggedInUser(currentUser)
-        print("user:", currentUser.username, "was selected")
         
         if let parentViewController = parentViewController {
             parentViewController.changeViewToLogin()

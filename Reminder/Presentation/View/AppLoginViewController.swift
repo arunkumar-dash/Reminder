@@ -38,8 +38,8 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
     
     override func loadView() {
         
+        view = NSView() // view will be empty until it decides what view after fetching from db
         appLoginPresenter = AppLoginPresenter()
-        appLoginPresenter?.appLoginViewController = self
         
         
         let success: (User) -> Void = {
@@ -52,9 +52,7 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
             }
             
             
-            self?.view = NSView(frame: NSRect(x: 0, y: 0, width: 600, height: 700))
-            guard let view = self?.view else { return }
-            view.addSubview(currentView)
+            self?.view.addSubview(currentView)
             if let viewController = self {
                 self?.currentView?.load(viewController)
             }
@@ -62,8 +60,12 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
             currentView.translatesAutoresizingMaskIntoConstraints = false
             currentView.widthAnchor.constraint(equalToConstant: 600).isActive = true
             currentView.heightAnchor.constraint(equalToConstant: 700).isActive = true
-            currentView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-            currentView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+            if let view = self?.view {
+                currentView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+                currentView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+            } else {
+                print("view is nil")
+            }
         }
         
         let failure: (String) -> Void = {
@@ -76,9 +78,8 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
                 return
             }
             
-            self?.view = NSView()
-            guard let view = self?.view else { return }
-            view.addSubview(currentView)
+            
+            self?.view.addSubview(currentView)
             if let viewController = self {
                 self?.currentView?.load(viewController)
             }
@@ -86,11 +87,15 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
             currentView.translatesAutoresizingMaskIntoConstraints = false
             currentView.widthAnchor.constraint(equalToConstant: 600).isActive = true
             currentView.heightAnchor.constraint(equalToConstant: 700).isActive = true
-            currentView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-            currentView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+            if let view = self?.view {
+                currentView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+                currentView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+            } else {
+                print("view is nil")
+            }
         }
         
-        appLoginPresenter?.getLastLoggedInUser(onSuccess: success, onFailure: failure)
+        getLastLoggedInUser(success: success, failure: failure)
     }
     
     private func fadeIn(_ view: NSView) {

@@ -21,11 +21,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         print("app launched")
         
         let appLoginViewController = AppLoginViewController()
+        window.contentViewController = appLoginViewController
         
         let size = NSSize(width: 600, height: 700)
         window.setContentSize(size)
         
-        window.contentViewController = appLoginViewController
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {

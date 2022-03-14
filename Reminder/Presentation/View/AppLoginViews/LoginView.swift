@@ -36,6 +36,16 @@ class LoginView: NSView, NSGestureRecognizerDelegate, AppLoginViewContract {
             [weak self]
             (user) in
             self?.lastLoggedInUser = user
+            
+            self?.configureUsernameTextBox()
+            
+            self?.configureUserImage()
+            
+            self?.addAllSubviews()
+            
+            self?.addAllLayoutConstraints()
+            
+            self?.setFirstResponderAsPasswordTextBox()
         }
         
         let failure = {
@@ -45,8 +55,6 @@ class LoginView: NSView, NSGestureRecognizerDelegate, AppLoginViewContract {
         
         parentViewController.getLastLoggedInUser(success: success, failure: failure)
         
-        configureUsernameTextBox()
-        
         configurePasswordTextBox()
         
         configureNavigateNextButton()
@@ -55,24 +63,18 @@ class LoginView: NSView, NSGestureRecognizerDelegate, AppLoginViewContract {
         
         configureIncorrectPasswordLabel()
         
-        configureUserImage()
         
         let mouseClick = NSClickGestureRecognizer(target: self, action: #selector(getPassword))
         addGestureRecognizer(mouseClick)
         
-        addSubviews([userImage, username, passwordTextBox, incorrectPasswordLabel, navigateNextButton, enterPasswordLabel, switchUserButton])
-        
-        addAllLayoutConstraints()
-        
-        setFirstResponder()
     }
     
     private func initializeDefaultValues() {
         passwordTextBox.stringValue = ""
     }
     
-    private func setFirstResponder() {
-        window?.makeFirstResponder(self.passwordTextBox)
+    private func setFirstResponderAsPasswordTextBox() {
+        self.window?.makeFirstResponder(self.passwordTextBox)
     }
     
     private func unhideAnimationView(_ view: NSView) {
@@ -190,8 +192,8 @@ class LoginView: NSView, NSGestureRecognizerDelegate, AppLoginViewContract {
         userImage.imageScaling = NSImageScaling.scaleAxesIndependently
     }
     
-    private func addSubviews(_ views: [NSView]) {
-        subviews = views
+    private func addAllSubviews() {
+        subviews = [userImage, username, passwordTextBox, incorrectPasswordLabel, navigateNextButton, enterPasswordLabel, switchUserButton]
     }
     
     private func addAllLayoutConstraints() {
@@ -239,7 +241,7 @@ class LoginView: NSView, NSGestureRecognizerDelegate, AppLoginViewContract {
     }
     
     @objc func getPassword() {
-        setFirstResponder()
+        setFirstResponderAsPasswordTextBox()
         showPasswordOptions()
     }
     
@@ -284,9 +286,5 @@ class LoginView: NSView, NSGestureRecognizerDelegate, AppLoginViewContract {
     
     @objc func navigateToSwitchUserView() {
         self.parentViewController?.changeViewToSwitchUser()
-    }
-    
-    override func viewDidMoveToWindow() {
-        setFirstResponder()
     }
 }
