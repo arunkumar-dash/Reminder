@@ -12,7 +12,7 @@ class RegistrationView: NSView, AppLoginViewContract {
     
     var usernameTextBox = NSTextField()
     var passwordTextBox = NSSecureTextField()
-    // should get image
+    
     var userImageView = NSImageView(image: NSImage(named: "user_icon")!)
     var userImageURL: URL? = nil
     var responseLabel: NSTextField = NSTextField(labelWithString: "")

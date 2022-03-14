@@ -108,7 +108,6 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
     }
     
     private func changeView(to selectedView: Views) {
-        // detach from parent view
         if let currentView = currentView {
             previousViews.append(currentView)
         }
@@ -135,7 +134,7 @@ class AppLoginViewController: NSViewController, AppLoginViewControllerContract {
 
         
         fadeIn(currentView)
-        // add to subview
+        
         view.addSubview(currentView)
         currentView.load(self)
         
