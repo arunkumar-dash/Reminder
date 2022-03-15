@@ -7,17 +7,52 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1D0E5D1427DB0E90003256F4 /* ReminderBackEnd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D0E5D1327DB0E90003256F4 /* ReminderBackEnd.framework */; };
+		1D0E5D1527DB0E90003256F4 /* ReminderBackEnd.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1D0E5D1327DB0E90003256F4 /* ReminderBackEnd.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1D4EF9EE27CE55FA008742D0 /* AppLoginViewContract.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4EF9ED27CE55FA008742D0 /* AppLoginViewContract.swift */; };
 		1D648A1027BF6A0B00A6AC58 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D648A0F27BF6A0B00A6AC58 /* AppDelegate.swift */; };
 		1D648A1227BF6A0E00A6AC58 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D648A1127BF6A0E00A6AC58 /* Assets.xcassets */; };
 		1D648A1527BF6A0E00A6AC58 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1D648A1327BF6A0E00A6AC58 /* MainMenu.xib */; };
+		1D648A2927BF7FA700A6AC58 /* AppLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D648A2827BF7FA700A6AC58 /* AppLoginViewController.swift */; };
+		1D93291D27C4F17B00088E99 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93291C27C4F17B00088E99 /* WelcomeView.swift */; };
+		1D93291F27C4F21A00088E99 /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93291E27C4F21A00088E99 /* RegistrationView.swift */; };
+		1D93292127C4F2A100088E99 /* SwitchUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93292027C4F2A100088E99 /* SwitchUserView.swift */; };
+		1D93292327C4F33700088E99 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93292227C4F33700088E99 /* LoginView.swift */; };
+		1D93293127C62B7400088E99 /* AppLoginPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93293027C62B7400088E99 /* AppLoginPresenter.swift */; };
+		1D93293527C6313E00088E99 /* AppLoginViewControllerContract.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93293427C6313E00088E99 /* AppLoginViewControllerContract.swift */; };
+		1D93294927C8FD8C00088E99 /* AppLoginPresenterContract.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D93294827C8FD8C00088E99 /* AppLoginPresenterContract.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		1DCD519D27DAF21A001E654C /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1D0E5D1527DB0E90003256F4 /* ReminderBackEnd.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		1D0E5D1327DB0E90003256F4 /* ReminderBackEnd.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ReminderBackEnd.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D4EF9ED27CE55FA008742D0 /* AppLoginViewContract.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoginViewContract.swift; sourceTree = "<group>"; };
 		1D648A0C27BF6A0B00A6AC58 /* Reminder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reminder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D648A0F27BF6A0B00A6AC58 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1D648A1127BF6A0E00A6AC58 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1D648A1427BF6A0E00A6AC58 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		1D648A1627BF6A0E00A6AC58 /* Reminder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Reminder.entitlements; sourceTree = "<group>"; };
+		1D648A2827BF7FA700A6AC58 /* AppLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoginViewController.swift; sourceTree = "<group>"; };
+		1D93291C27C4F17B00088E99 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		1D93291E27C4F21A00088E99 /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
+		1D93292027C4F2A100088E99 /* SwitchUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchUserView.swift; sourceTree = "<group>"; };
+		1D93292227C4F33700088E99 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		1D93293027C62B7400088E99 /* AppLoginPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoginPresenter.swift; sourceTree = "<group>"; };
+		1D93293427C6313E00088E99 /* AppLoginViewControllerContract.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoginViewControllerContract.swift; sourceTree = "<group>"; };
+		1D93294827C8FD8C00088E99 /* AppLoginPresenterContract.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoginPresenterContract.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -25,17 +60,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D0E5D1427DB0E90003256F4 /* ReminderBackEnd.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1D4EFE3527D72AE4008742D0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1D0E5D1327DB0E90003256F4 /* ReminderBackEnd.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		1D648A0327BF6A0B00A6AC58 = {
 			isa = PBXGroup;
 			children = (
 				1D648A0E27BF6A0B00A6AC58 /* Reminder */,
 				1D648A0D27BF6A0B00A6AC58 /* Products */,
+				1D4EFE3527D72AE4008742D0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -54,8 +99,57 @@
 				1D648A1127BF6A0E00A6AC58 /* Assets.xcassets */,
 				1D648A1327BF6A0E00A6AC58 /* MainMenu.xib */,
 				1D648A1627BF6A0E00A6AC58 /* Reminder.entitlements */,
+				1D93292E27C615D500088E99 /* Presentation */,
 			);
 			path = Reminder;
+			sourceTree = "<group>";
+		};
+		1D93292C27C6157500088E99 /* AppLoginViews */ = {
+			isa = PBXGroup;
+			children = (
+				1D93291C27C4F17B00088E99 /* WelcomeView.swift */,
+				1D93291E27C4F21A00088E99 /* RegistrationView.swift */,
+				1D93292027C4F2A100088E99 /* SwitchUserView.swift */,
+				1D93292227C4F33700088E99 /* LoginView.swift */,
+			);
+			path = AppLoginViews;
+			sourceTree = "<group>";
+		};
+		1D93292D27C615A700088E99 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				1D648A2827BF7FA700A6AC58 /* AppLoginViewController.swift */,
+				1D93292C27C6157500088E99 /* AppLoginViews */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		1D93292E27C615D500088E99 /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				1D93293327C62BC000088E99 /* Contract */,
+				1D93293227C62B8F00088E99 /* Presenter */,
+				1D93292D27C615A700088E99 /* View */,
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
+		1D93293227C62B8F00088E99 /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				1D93293027C62B7400088E99 /* AppLoginPresenter.swift */,
+			);
+			path = Presenter;
+			sourceTree = "<group>";
+		};
+		1D93293327C62BC000088E99 /* Contract */ = {
+			isa = PBXGroup;
+			children = (
+				1D93293427C6313E00088E99 /* AppLoginViewControllerContract.swift */,
+				1D93294827C8FD8C00088E99 /* AppLoginPresenterContract.swift */,
+				1D4EF9ED27CE55FA008742D0 /* AppLoginViewContract.swift */,
+			);
+			path = Contract;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -68,6 +162,7 @@
 				1D648A0827BF6A0B00A6AC58 /* Sources */,
 				1D648A0927BF6A0B00A6AC58 /* Frameworks */,
 				1D648A0A27BF6A0B00A6AC58 /* Resources */,
+				1DCD519D27DAF21A001E654C /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -128,6 +223,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D93292127C4F2A100088E99 /* SwitchUserView.swift in Sources */,
+				1D4EF9EE27CE55FA008742D0 /* AppLoginViewContract.swift in Sources */,
+				1D93294927C8FD8C00088E99 /* AppLoginPresenterContract.swift in Sources */,
+				1D93291F27C4F21A00088E99 /* RegistrationView.swift in Sources */,
+				1D93291D27C4F17B00088E99 /* WelcomeView.swift in Sources */,
+				1D93293127C62B7400088E99 /* AppLoginPresenter.swift in Sources */,
+				1D648A2927BF7FA700A6AC58 /* AppLoginViewController.swift in Sources */,
+				1D93292327C4F33700088E99 /* LoginView.swift in Sources */,
+				1D93293527C6313E00088E99 /* AppLoginViewControllerContract.swift in Sources */,
 				1D648A1027BF6A0B00A6AC58 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -267,11 +371,16 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Reminder/Reminder.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XSQT2B26VT;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Reminder/ReminderBackEnd",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainNibFile = MainMenu;
@@ -283,6 +392,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.arun.Reminder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -294,11 +404,16 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Reminder/Reminder.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XSQT2B26VT;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Reminder/ReminderBackEnd",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainNibFile = MainMenu;
@@ -310,6 +425,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.arun.Reminder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
